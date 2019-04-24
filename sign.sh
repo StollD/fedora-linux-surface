@@ -6,4 +6,5 @@ then
     exit 1
 fi
 
-sbsign --key keys/MOK.priv --cert keys/MOK.pem --output $1 $1
+DIR=$(dirname "$0")
+sbsign --key $DIR/keys/MOK.priv --cert $DIR/keys/MOK.pem --output $1 $1
