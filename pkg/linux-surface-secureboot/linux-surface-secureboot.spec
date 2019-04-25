@@ -11,6 +11,9 @@ Requires:       mokutil
 BuildArch:      noarch
 
 %description
+This package installs the secureboot certificate that is used to sign the kernel from the kernel-surface package.
+When you reboot for the first time, it will ask you to enroll the MOK certificate. Please check if the key is really mine,
+and then confirm the import by entering "000" as the password.
 
 %prep
 %setup -q -c -T
@@ -25,11 +28,15 @@ install -pm 644 %{SOURCE0} $RPM_BUILD_ROOT/usr/share/linux-surface-secureboot
 %post
 
 # Install the repository
-mokutil --import /usr/share/linux-surface-secureboot/MOK.der --password 000
+TEMP=$(mktemp)
+mokutil --generate-hash=000 > $TEMP
+mokutil --hash-file $TEMP --import /usr/share/linux-surface-secureboot/MOK.der
 
 %preun
 
-mokutil --delete /usr/share/linux-surface-secureboot/MOK.der --password 000
+TEMP=$(mktemp)
+mokutil --generate-hash=000 > $TEMP
+mokutil --hash-file $TEMP --delete /usr/share/linux-surface-secureboot/MOK.der
 
 %files
 /usr/share/linux-surface-secureboot/MOK.der

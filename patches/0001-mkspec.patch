@@ -1,15 +1,15 @@
-From 28aa315414541746566b257f20ee20d0b49a4c7d Mon Sep 17 00:00:00 2001
+From f8c53080b1e239324c8733d0ac6e3fa4781b1447 Mon Sep 17 00:00:00 2001
 From: Dorian Stoll <dorian.stoll@tmsp.io>
-Date: Thu, 25 Apr 2019 19:23:36 +0200
+Date: Thu, 25 Apr 2019 19:51:35 +0200
 Subject: [PATCH] mkspec
 
 Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
 ---
- scripts/package/mkspec | 67 ++++++++++++++++--------------------------
- 1 file changed, 25 insertions(+), 42 deletions(-)
+ scripts/package/mkspec | 71 ++++++++++++++++--------------------------
+ 1 file changed, 27 insertions(+), 44 deletions(-)
 
 diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-index 009147d4718e..812116c04351 100755
+index 009147d4718e..82d787571803 100755
 --- a/scripts/package/mkspec
 +++ b/scripts/package/mkspec
 @@ -27,7 +27,6 @@ if grep -q CONFIG_DRM=y .config; then
@@ -25,9 +25,10 @@ index 009147d4718e..812116c04351 100755
  #  $M: this line is enabled only when CONFIG_MODULES is enabled
  sed -e '/^DEL/d' -e 's/^\t*//' <<EOF
 -	Name: kernel
-+	Name: kernel-surface
- 	Summary: The Linux Kernel
+-	Summary: The Linux Kernel
 -	Version: $__KERNELRELEASE
++	Name: kernel-surface
++	Summary: The Linux Kernel with jakedays patches for Microsoft Surface
 +	Version: $(echo $KERNELRELEASE | cut -d'-' -f1)
  	Release: $(cat .version 2>/dev/null || echo 1)
  	License: GPL
@@ -36,12 +37,13 @@ index 009147d4718e..812116c04351 100755
  	URL: http://www.kernel.org
  $S	Source: kernel-$__KERNELRELEASE.tar.gz
 -	Provides: $PROVIDES
-+	Provides: kernel $PROVIDES
++	Provides: kernel-core $PROVIDES
  	%define __spec_install_post /usr/lib/rpm/brp-compress || :
  	%define debug_package %{nil}
  
  	%description
- 	The Linux Kernel, the operating system core itself
+-	The Linux Kernel, the operating system core itself
++	The Linux Kernel, the operating system core itself, with support for Microsoft Surface by jakeday.
  
 -	%package headers
 -	Summary: Header files for the Linux kernel for use by glibc
@@ -64,7 +66,7 @@ index 009147d4718e..812116c04351 100755
 -$S$M	against the $__KERNELRELEASE kernel package.
 -$S$M
 +$M	%package devel
-+$M	Summary: Development package for building kernel modules to match the $__KERNELRELEASE kernel
++$M	Summary: Development package for building kernel modules to match the $__KERNELRELEASE-surface kernel
 +$M	Group: System Environment/Kernel
 +$M	AutoReqProv: no
 +$M	Provides: kernel-devel
