@@ -21,8 +21,11 @@ do
     patch -p1 < $i
 done
 
-# Force binrpm-pkg to build kernel-devel packages
-sed -i 's/$S$M/$M/g' scripts/package/mkspec
+# Apply our own patches
+for i in $DIR/patches/*.patch
+do
+    patch -p1 < $i
+done
 
 # Apply the surface config
 scripts/kconfig/merge_config.sh -m fedora/configs/kernel-$KERNELVERSION-x86_64.config $DIR/config.surface
