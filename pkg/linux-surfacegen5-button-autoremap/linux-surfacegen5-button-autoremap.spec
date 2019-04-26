@@ -11,6 +11,9 @@ BuildArch:      noarch
 Requires:       python3-evdev python3-dbus python3-pydbus iio-sensor-proxy
 
 %description
+Auto-remap Microsoft Surface Book 2 and Surface Pro (2017) volume buttons based on device orientation.
+
+Ensures that the left/lower volume button always decreases, and the right/upper always increases the volume.
 
 %prep
 %autosetup -n linux-surfacegen5-button-autoremap-master
@@ -20,11 +23,12 @@ Requires:       python3-evdev python3-dbus python3-pydbus iio-sensor-proxy
 %install
 rm -rf $RPM_BUILD_ROOT
 
-# Install the repository
+# Install the autorotate service
+sed -i 's|#!/usr/bin/env python|#!/usr/bin/env python3|g' autoremap.py
 install -dm 755 $RPM_BUILD_ROOT/usr/lib/systemd/system
 install -dm 755 $RPM_BUILD_ROOT/opt/surfacebook2-button-autoremap
 install -pm 644 surfacebook2-button-autoremap.service $RPM_BUILD_ROOT/usr/lib/systemd/system
-install -pm 644 autoremap.py $RPM_BUILD_ROOT/opt/surfacebook2-button-autoremap
+install -pm 755 autoremap.py $RPM_BUILD_ROOT/opt/surfacebook2-button-autoremap
 
 %files
 %doc
