@@ -27,6 +27,13 @@ When the build completed you will find the generated RPM packages under `$HOME/r
 Alternatively you can check out the releases section for precompiled packages, that are already signed with my secure boot certificate. To use them with secure boot,
 just import the certificate from this repository (using the `install.sh` script), or resign them using jakedays tutorial.
 
+Required:
+* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.0.11)
+* [libwacom](https://github.com/StollD/fedora-linux-surface/releases/tag/libwacom-surface-0.33)
+
+Optional:
+* [linux-surfacegen5-button-autoremap](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surfacegen5-button-autoremap-1)
+
 ## Dependencies
 Installation:
 * mokutil (for `install.sh`)
