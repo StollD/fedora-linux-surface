@@ -34,7 +34,9 @@ scripts/kconfig/merge_config.sh -m fedora/configs/kernel-$KERNELVERSION-x86_64.c
 make $MAKEFLAGS all LOCALVERSION=-surface
 
 # Sign the compiled vmlinuz image
-$DIR/sign.sh $(make -s image_name)
+if [ -f $DIR/keys/MOK.priv ]; then
+    $DIR/sign.sh $(make -s image_name)
+fi
 
 # Package the kernel as .rpm
 make $MAKEFLAGS binrpm-pkg LOCALVERSION=-surface

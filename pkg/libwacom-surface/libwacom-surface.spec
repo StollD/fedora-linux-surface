@@ -4,6 +4,7 @@ Release:        1
 Summary:        Tablet Information Client Library
 Requires:       %{name}-data
 Provides:       libwacom
+Conflicts:      libwacom
 
 License:        MIT
 URL:            https://github.com/linuxwacom/libwacom
@@ -28,6 +29,7 @@ Summary:        Tablet Information Client Library Library Development Package
 Requires:       %{name} = %{version}-%{release}
 Requires:       pkgconfig
 Provides:       libwacom-devel
+Conflicts:      libwacom-devel
 
 %description devel
 Tablet information client library library development package.
@@ -36,6 +38,7 @@ Tablet information client library library development package.
 Summary:        Tablet Information Client Library Library Data Files
 BuildArch:      noarch
 Provides:       libwacom-data
+Conflicts:      libwacom-data
 
 %description data
 Tablet information client library library data files.
