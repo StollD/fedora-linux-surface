@@ -1,26 +1,18 @@
-From f8c53080b1e239324c8733d0ac6e3fa4781b1447 Mon Sep 17 00:00:00 2001
+From 906eb7a964c83c75d0c612def3e2e71f5152d963 Mon Sep 17 00:00:00 2001
 From: Dorian Stoll <dorian.stoll@tmsp.io>
 Date: Thu, 25 Apr 2019 19:51:35 +0200
 Subject: [PATCH] mkspec
 
 Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
 ---
- scripts/package/mkspec | 71 ++++++++++++++++--------------------------
- 1 file changed, 27 insertions(+), 44 deletions(-)
+ scripts/package/mkspec | 67 ++++++++++++++++--------------------------
+ 1 file changed, 25 insertions(+), 42 deletions(-)
 
 diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-index 009147d4718e..82d787571803 100755
+index 009147d4718e..abb955ea9a00 100755
 --- a/scripts/package/mkspec
 +++ b/scripts/package/mkspec
-@@ -27,7 +27,6 @@ if grep -q CONFIG_DRM=y .config; then
- 	PROVIDES=kernel-drm
- fi
- 
--PROVIDES="$PROVIDES kernel-$KERNELRELEASE"
- __KERNELRELEASE=$(echo $KERNELRELEASE | sed -e "s/-/_/g")
- EXCLUDES="$RCS_TAR_IGNORE --exclude=.tmp_versions --exclude=*vmlinux* \
- --exclude=*.o --exclude=*.ko --exclude=*.cmd --exclude=Documentation \
-@@ -39,42 +38,31 @@ EXCLUDES="$RCS_TAR_IGNORE --exclude=.tmp_versions --exclude=*vmlinux* \
+@@ -39,9 +39,9 @@ EXCLUDES="$RCS_TAR_IGNORE --exclude=.tmp_versions --exclude=*vmlinux* \
  #  $S: this line is enabled only when building source package
  #  $M: this line is enabled only when CONFIG_MODULES is enabled
  sed -e '/^DEL/d' -e 's/^\t*//' <<EOF
@@ -33,12 +25,7 @@ index 009147d4718e..82d787571803 100755
  	Release: $(cat .version 2>/dev/null || echo 1)
  	License: GPL
  	Group: System Environment/Kernel
- 	Vendor: The Linux Community
- 	URL: http://www.kernel.org
- $S	Source: kernel-$__KERNELRELEASE.tar.gz
--	Provides: $PROVIDES
-+	Provides: kernel-core $PROVIDES
- 	%define __spec_install_post /usr/lib/rpm/brp-compress || :
+@@ -53,28 +53,16 @@ $S	Source: kernel-$__KERNELRELEASE.tar.gz
  	%define debug_package %{nil}
  
  	%description
@@ -69,7 +56,6 @@ index 009147d4718e..82d787571803 100755
 +$M	Summary: Development package for building kernel modules to match the $__KERNELRELEASE-surface kernel
 +$M	Group: System Environment/Kernel
 +$M	AutoReqProv: no
-+$M	Provides: kernel-devel
 +$M	%description -n kernel-surface-devel
 +$M	This package provides kernel headers and makefiles sufficient to build modules
 +$M	against the $__KERNELRELEASE kernel-surface package.
