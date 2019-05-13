@@ -28,7 +28,7 @@ Alternatively you can check out the releases section for precompiled packages, t
 just import the certificate from this repository (using the `install.sh` script), or resign them using jakedays tutorial.
 
 Required:
-* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.0.11)
+* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.0.14)
 * [libwacom](https://github.com/StollD/fedora-linux-surface/releases/tag/libwacom-surface-0.33)
 
 Optional:
