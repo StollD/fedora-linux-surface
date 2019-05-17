@@ -3,6 +3,8 @@
 
 This is a collection of random scripts and `*.spec` files that I am using to compile kernels on Fedora with [jakedays](https://github.com/jakeday/linux-surface) linux-surface patches applied.
 
+For a DNF / YUM repository, please look here: https://gitlab.com/StollD/fedora-linux-surface-repo
+
 ## Compilation
 The first thing you need to do is to clone the kernel source code, with fedoras patches applied, jakedays patch repository, and this repository
 ```
