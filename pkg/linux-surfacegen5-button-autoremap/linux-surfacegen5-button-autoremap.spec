@@ -31,7 +31,6 @@ install -pm 644 surfacebook2-button-autoremap.service $RPM_BUILD_ROOT/usr/lib/sy
 install -pm 755 autoremap.py $RPM_BUILD_ROOT/opt/surfacebook2-button-autoremap
 
 %files
-%doc
 /usr/lib/systemd/system/surfacebook2-button-autoremap.service
 /opt/surfacebook2-button-autoremap/autoremap.py
 
