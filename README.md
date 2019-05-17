@@ -32,9 +32,12 @@ just import the certificate from this repository (using the `install.sh` script)
 Required:
 * [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.0.16)
 * [libwacom](https://github.com/StollD/fedora-linux-surface/releases/tag/libwacom-surface-0.33)
+* [linux-surface-secureboot](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-secureboot-1)
 
 Optional:
 * [linux-surfacegen5-button-autoremap](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surfacegen5-button-autoremap-1)
+* [linux-surface-control](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-control-0.2.2)
+* [linux-surface-dtx-daemon](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-dtx-daemon-0.1.2)
 
 ## Dependencies
 Installation:
