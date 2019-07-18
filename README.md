@@ -10,7 +10,7 @@ If you don't want to use the repository, you can get the packages directly from
 the release section.
 
 Required:
-* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.1.17)
+* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.1.18)
 * [libwacom](https://github.com/StollD/fedora-linux-surface/releases/tag/libwacom-surface-0.33)
 * [linux-surface-secureboot](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-secureboot-1)
 
