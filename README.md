@@ -81,13 +81,13 @@ Your surface should now hibernate correctly.
 The first thing you need to do is to clone the kernel source code, with fedoras 
 patches applied, jakedays patch repository, and this repository
 ```
-$ git clone https://git.kernel.org/pub/scm/linux/kernel/git/jwboyer/fedora.git
+$ git clone https://github.com/StollD/linux-fedora
 $ git clone https://github.com/jakeday/linux-surface
 $ git clone https://github.com/StollD/fedora-linux-surface
 ```
 
 Make sure that all repositories are in the same parent directory. Now enter the 
-`fedora` folder and check out the branch you want to build.
+`linux-fedora` folder and check out the branch you want to build.
 ```
 $ git checkout fxy
 ```
