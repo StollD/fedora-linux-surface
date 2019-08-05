@@ -6,19 +6,6 @@ linux-surface patches applied.
 All packages that I produce from these scripts are available in a dnf 
 repository so you can install and keep them up to date easily.
 
-If you don't want to use the repository, you can get the packages directly from
-the release section.
-
-Required:
-* [kernel](https://github.com/StollD/fedora-linux-surface/releases/tag/kernel-surface-5.1.18)
-* [libwacom](https://github.com/StollD/fedora-linux-surface/releases/tag/libwacom-surface-0.33)
-* [linux-surface-secureboot](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-secureboot-1)
-
-Optional:
-* [linux-surfacegen5-button-autoremap](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surfacegen5-button-autoremap-1)
-* [linux-surface-control](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-control-0.2.2)
-* [linux-surface-dtx-daemon](https://github.com/StollD/fedora-linux-surface/releases/tag/linux-surface-dtx-daemon-0.1.2)
-
 ## Installing the repository
 You can add the repository to dnf using the following commands
 ```bash
