@@ -1,7 +1,4 @@
 
-# Allow hibernation when booted with secure boot
-CONFIG_LOCK_DOWN_IN_EFI_SECURE_BOOT=n
-
 # Compress kernel modules and forcefully remove debug symbols
 CONFIG_MODULE_COMPRESS=y
 CONFIG_MODULE_COMPRESS_GZIP=n
