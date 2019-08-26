@@ -6,13 +6,9 @@ CONFIG_MODULE_COMPRESS_XZ=y
 CONFIG_DEBUG_INFO=n
 CONFIG_KALLSYMS=n
 
-# Surface related kernel configs
+# Surface related kernel configs.
+# These keys do not exist without jakedays patches
 CONFIG_INTEL_IPTS=m
-CONFIG_MEDIA_CEC_RC=y
-# CONFIG_MWLWIFI is not set
-CONFIG_NET_DSA_MV88E6060=m
-CONFIG_NET_DSA_TAG_TRAILER=y
-CONFIG_OVERLAY_FS_NFS_EXPORT=n
 CONFIG_SURFACE_3_POWER_OPREGION=m
 CONFIG_SURFACE_ACPI=m
 CONFIG_SURFACE_ACPI_SAN=y
@@ -22,3 +18,9 @@ CONFIG_SURFACE_ACPI_VHF=y
 CONFIG_SURFACE_ACPI_DTX=y
 CONFIG_SURFACE_ACPI_SID=y
 CONFIG_SURFACE_BOOK2_DGPU_HPS=m
+# CONFIG_MWLWIFI is not set
+
+# Enable support for the image processing unit.
+# Note that this is useless without drivers for the camera sensors
+CONFIG_VIDEO_IPU3_CIO2=m
+CONFIG_VIDEO_IPU3_IMGU=m
