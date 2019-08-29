@@ -1,4 +1,4 @@
-From 19c2ffd6a2a6c899eb6b81a5125cb4a11dded025 Mon Sep 17 00:00:00 2001
+From 42f783620ceba7e0ed328fa8ef286d4232350e39 Mon Sep 17 00:00:00 2001
 From: Dorian Stoll <dorian.stoll@tmsp.io>
 Date: Thu, 25 Apr 2019 19:51:35 +0200
 Subject: [PATCH] mkspec
@@ -9,7 +9,7 @@ Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
  1 file changed, 157 insertions(+), 96 deletions(-)
 
 diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-index 009147d4718e..21298f97a460 100755
+index 009147d4718e..65f3bf49aa61 100755
 --- a/scripts/package/mkspec
 +++ b/scripts/package/mkspec
 @@ -11,16 +11,7 @@
@@ -264,15 +264,15 @@ index 009147d4718e..21298f97a460 100755
 +
 +	# build a BLS config for this kernel
 +	cat >%{buildroot}/lib/modules/$KERNELRELEASE/bls.conf <<EOC
-+title \$(. /etc/os-release && echo \$NAME) ($KERNELRELEASE) \$(. /etc/os-release && echo \$VERSION)
-+version $KERNELRELEASE
-+linux /vmlinuz-$KERNELRELEASE
-+initrd /initramfs-$KERNELRELEASE.img
-+options \\\$kernelopts
-+grub_users \\\$grub_users
-+grub_arg --unrestricted
-+grub_class kernel
-+EOC
++	title \$(. /etc/os-release && echo \$NAME) ($KERNELRELEASE) \$(. /etc/os-release && echo \$VERSION)
++	version $KERNELRELEASE
++	linux /vmlinuz-$KERNELRELEASE
++	initrd /initramfs-$KERNELRELEASE.img
++	options \\\$kernelopts
++	grub_users \\\$grub_users
++	grub_arg --unrestricted
++	grub_class kernel
++	EOC
 +
 +	%clean
 +	rm -rf %{buildroot}
