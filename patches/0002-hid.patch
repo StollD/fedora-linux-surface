@@ -1,0 +1,39 @@
+From 6c96a36cebf32559ea7012f3297b68a2427fe3cc Mon Sep 17 00:00:00 2001
+From: kitakar5525 <34676735+kitakar5525@users.noreply.github.com>
+Date: Wed, 28 Aug 2019 16:19:27 +0200
+Subject: [PATCH] ipts: hid-multitouch: give a name to single and multi touch
+
+Signed-off-by: Dorian Stoll <dorian.stoll@tmsp.io>
+---
+ drivers/hid/hid-multitouch.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 09ca4b1f2797..76af8ea94974 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -1551,6 +1551,11 @@ static int mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 			if (ret)
+ 				return ret;
+ 		}
++
++		if (report->field[0]->logical == HID_DG_TOUCHSCREEN) {
++			suffix = "SingleTouch";
++			__set_bit(BTN_STYLUS, hi->input->keybit);
++		}
+ 	}
+ 
+ 	switch (hi->application) {
+@@ -1577,7 +1582,8 @@ static int mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
+ 		suffix = "Custom Media Keys";
+ 		break;
+ 	default:
+-		suffix = "UNKNOWN";
++		if (!suffix)
++			suffix = "UNKNOWN";
+ 		break;
+ 	}
+ 
+-- 
+2.21.0
+
