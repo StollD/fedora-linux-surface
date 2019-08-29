@@ -4,7 +4,7 @@ MAKEFLAGS=$1
 DIR=$(dirname "$0")
 JAKEDAY=$2
 PATCHSET=$3
-KERNELVERSION=$(make -s kernelversion)
+KERNELVERSION=$(make -s kernelversion | cut -d'-' -f1)
 
 # Undo all changes
 git reset --hard HEAD
