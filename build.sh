@@ -22,7 +22,7 @@ do
 done
 
 # Apply our own patches
-for i in $DIR/patches/*.patch
+for i in $DIR/patches/$PATCHSET/*.patch
 do
     patch -p1 < $i
 done
