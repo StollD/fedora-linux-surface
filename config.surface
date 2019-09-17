@@ -9,6 +9,7 @@ CONFIG_KALLSYMS=n
 # Surface related kernel configs.
 # These keys do not exist without jakedays patches
 CONFIG_INTEL_IPTS=m
+CONFIG_INTEL_IPTS_SURFACE=m
 CONFIG_SURFACE_3_POWER_OPREGION=m
 CONFIG_SURFACE_ACPI=m
 CONFIG_SURFACE_ACPI_SAN=y
