@@ -20,7 +20,10 @@ for WiFi and touchscreen. When it asks you to install the patched libwacom and
 kernel, select no, since that would start downloading `.deb` packages that are 
 useless on Fedora.
 ```bash
-$ git clone https://github.com/jakeday/linux-surface
+# While jakedays repository works too, it is inactive at the moment. 
+# The kernels are based on qzed's patches, so using his repo will
+# probably work better.
+$ git clone https://github.com/qzed/linux-surface
 $ cd linux-surface
 $ bash setup.sh
 ```
@@ -80,15 +83,18 @@ Your surface should now hibernate correctly.
 ## Building the kernel yourself
 The first thing you need to do is to clone the kernel source code, with fedoras 
 patches applied, jakedays patch repository, and this repository
-```
+```bash
+# While jakedays repository works too, it is inactive at the moment. 
+# The kernels are based on qzed's patches, so using his repo will
+# probably work better.
 $ git clone https://github.com/StollD/linux-fedora
-$ git clone https://github.com/jakeday/linux-surface
+$ git clone https://github.com/qzed/linux-surface
 $ git clone https://github.com/StollD/fedora-linux-surface
 ```
 
 Make sure that all repositories are in the same parent directory. Now enter the 
 `linux-fedora` folder and check out the branch you want to build.
-```
+```bash
 $ git checkout fxy
 ```
 
@@ -96,7 +102,7 @@ You can now use the `build.sh` script to automatically patch and compile the
 kernel for you. If you have a secureboot certificate that the script should use 
 to sign the kernel, overwrite the files in `keys/` with it. If the script sees 
 a `MOK.priv` file in that directory, it will use it automatically.
-```
+```bash
 $ ../fedora-linux-surface/build.sh -j4 ../linux-surface
 ```
 Modify `-j4` to be the amount of CPU cores you want to use to build the kernel, 
