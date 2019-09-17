@@ -1,5 +1,5 @@
 Name:           linux-surface-control
-Version:        0.2.2
+Version:        0.2.4
 Release:        1
 Summary:        Control various aspects of Microsoft Surface devices from the Command-Line
 
@@ -46,5 +46,8 @@ install -Dm644 "LICENSE" "$RPM_BUILD_ROOT/usr/share/licenses/surface-control/LIC
 /usr/share/licenses/surface-control/LICENSE
 
 %changelog
+* Sat Sep 14 2019 Dorian Stoll <dorian.stoll@tmsp.io>
+- Update to 0.2.4
+
 * Fri May 17 2019 Dorian Stoll <dorian.stoll@tmsp.io>
 - Initial version

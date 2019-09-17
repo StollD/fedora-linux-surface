@@ -1,5 +1,5 @@
 Name:           linux-surface-dtx-daemon
-Version:        0.1.2
+Version:        0.1.4
 Release:        1
 Summary:        Surface Detachment System (DTX) Daemon
 
@@ -80,5 +80,8 @@ install -Dm644 "LICENSE" "$RPM_BUILD_ROOT/usr/share/licenses/surface-dtx-daemon/
 /usr/share/licenses/surface-dtx-daemon/LICENSE
 
 %changelog
+* Sat Sep 14 2019 Dorian Stoll <dorian.stoll@tmsp.io>
+- Update to 0.1.2
+
 * Fri May 17 2019 Dorian Stoll <dorian.stoll@tmsp.io>
 - Initial version
