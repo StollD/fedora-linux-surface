@@ -264,7 +264,7 @@ index 009147d4718e..65f3bf49aa61 100755
 +
 +	# build a BLS config for this kernel
 +	cat >%{buildroot}/lib/modules/$KERNELRELEASE/bls.conf <<EOC
-+	title \$(. /etc/os-release && echo \$NAME) ($KERNELRELEASE) \$(. /etc/os-release && echo \$VERSION)
++	title \$(. /etc/os-release && echo \$NAME) \$(. /etc/os-release && echo \$VERSION_ID) ($KERNELRELEASE) 
 +	version $KERNELRELEASE
 +	linux /vmlinuz-$KERNELRELEASE
 +	initrd /initramfs-$KERNELRELEASE.img
