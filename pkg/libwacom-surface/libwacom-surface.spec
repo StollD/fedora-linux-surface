@@ -1,5 +1,5 @@
 Name:           libwacom-surface
-Version:        0.33
+Version:        1.1
 Release:        1
 Summary:        Tablet Information Client Library
 Requires:       %{name}-data
@@ -10,14 +10,20 @@ License:        MIT
 URL:            https://github.com/linuxwacom/libwacom
 
 Source0:        https://github.com/linuxwacom/libwacom/releases/download/libwacom-%{version}/libwacom-%{version}.tar.bz2
-Patch0:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/00_mei-bus.patch
-Patch1:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/01_surface-tablet-data.patch
+Patch0:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0001-Add-support-for-Intel-Management-Engine-bus.patch
+Patch1:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0002-data-Add-Microsoft-Surface-Book-2-13.5.patch
+Patch2:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0003-data-Add-Microsoft-Surface-Pro-5.patch
+Patch3:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0004-data-Add-Microsoft-Surface-Book-2-15.patch
+Patch4:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0005-data-Add-Microsoft-Surface-Pro-6.patch
+Patch5:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0006-data-Add-Microsoft-Surface-Pro-4.patch
+Patch6:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0007-data-Add-Microsoft-Surface-Book.patch
 
 
-BuildRequires:  autoconf automake libtool doxygen
+BuildRequires:  meson gcc
 BuildRequires:  glib2-devel libgudev1-devel
 BuildRequires:  systemd systemd-devel
 BuildRequires:  git
+BuildRequires:  libxml2-devel
 
 %description
 %{name} is a library that provides information about Wacom tablets and
@@ -46,30 +52,31 @@ Tablet information client library library data files.
 %prep
 %autosetup -S git -n libwacom-%{version}
 
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro6.tablet',|g" meson.build
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro5.tablet',|g" meson.build
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro4.tablet',|g" meson.build
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book2-15.tablet',|g" meson.build
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book2-13.tablet',|g" meson.build
+sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book.tablet',|g" meson.build
+
 %build
-autoreconf --force -v --install || exit 1
-%configure --disable-static --disable-silent-rules
-make %{?_smp_mflags}
+%meson -Dtests=true
+%meson_build
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%meson_install
 install -d ${RPM_BUILD_ROOT}/%{_udevrulesdir}
 # auto-generate the udev rule from the database entries
-pushd tools
-./generate-udev-rules > ${RPM_BUILD_ROOT}/%{_udevrulesdir}/65-libwacom.rules
-popd
-
-# We intentionally don't ship *.la files
-find %{buildroot} -type f -name "*.la" -delete
+%_vpath_builddir/generate-udev-rules > ${RPM_BUILD_ROOT}/%{_udevrulesdir}/65-libwacom.rules
 
 %check
-make %{?_smp_mflags} check
+%meson_test
 
 %ldconfig_scriptlets
 
 %files
 %license COPYING
-%doc README
+%doc README.md
 %{_libdir}/libwacom.so.*
 %{_bindir}/libwacom-list-local-devices
 %{_mandir}/man1/libwacom-list-local-devices.1*
@@ -91,6 +98,16 @@ make %{?_smp_mflags} check
 %{_datadir}/libwacom/layouts/*.svg
 
 %changelog
+* Mon Sep 16 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.1-1
+- libwacom 1.1
+
+* Mon Aug 26 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.0-1
+- libwacom 1.0
+
+* Thu Aug 08 2019 Peter Hutterer <peter.hutterer@redhat.com> 0.99.901-1
+- libwacom 1.0rc1
+- switch to meson
+
 * Fri Apr 12 2019 Peter Hutterer <peter.hutterer@redhat.com> 0.33-1
 - libwacom 0.33
 
