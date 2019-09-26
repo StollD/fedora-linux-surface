@@ -82,7 +82,7 @@ scripts/kconfig/merge_config.sh -m 				\
 	$DIR/config.surface
 
 # Generate the kernel version string
-KVER="-$KERNELBUILD.fc$FEDORAVER.surface.x86_64"
+KVER="-$KERNELBUILD.surface.fc$FEDORAVER.x86_64"
 
 # Update version
 echo $(($KERNELBUILD - 1)) > .version
