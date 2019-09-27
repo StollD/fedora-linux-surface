@@ -1,6 +1,6 @@
 Name:           libwacom-surface
 Version:        1.1
-Release:        1
+Release:        1%{?dist}
 Summary:        Tablet Information Client Library
 Requires:       %{name}-data
 Provides:       libwacom
@@ -17,6 +17,7 @@ Patch3:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0
 Patch4:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0005-data-Add-Microsoft-Surface-Pro-6.patch
 Patch5:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0006-data-Add-Microsoft-Surface-Pro-4.patch
 Patch6:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0007-data-Add-Microsoft-Surface-Book.patch
+Patch7:         0001-update-meson.patch
 
 
 BuildRequires:  meson gcc
@@ -51,13 +52,6 @@ Tablet information client library library data files.
 
 %prep
 %autosetup -S git -n libwacom-%{version}
-
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro6.tablet',|g" meson.build
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro5.tablet',|g" meson.build
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-pro4.tablet',|g" meson.build
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book2-15.tablet',|g" meson.build
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book2-13.tablet',|g" meson.build
-sed -i "s|'data/serial-wacf004.tablet',|'data/serial-wacf004.tablet',\n\t'data/surface-book.tablet',|g" meson.build
 
 %build
 %meson -Dtests=true

@@ -1,0 +1,22 @@
+From a7724a285493babff912352a6d30f8ecf8bbc2b9 Mon Sep 17 00:00:00 2001
+From: Dorian Stoll <dorian.stoll@tmsp.io>
+Date: Fri, 27 Sep 2019 15:25:32 +0200
+Subject: [PATCH] explicit python3
+
+---
+ autoremap.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/autoremap.py b/autoremap.py
+index ffd4da8..2b02afb 100755
+--- a/autoremap.py
++++ b/autoremap.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ import os
+ 
+ from argparse import ArgumentParser
+-- 
+2.23.0
+

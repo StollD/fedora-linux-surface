@@ -1,0 +1,4 @@
+*
+!.gitignore
+!linux-surfacegen5-button-autoremap.spec
+!0001-explicit-python3.patch

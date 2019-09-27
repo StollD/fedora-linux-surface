@@ -1,41 +1,40 @@
-Name:           linux-surface-control
-Version:        0.2.4
-Release:        1
-Summary:        Control various aspects of Microsoft Surface devices from the Command-Line
+%global pkg_version 0.2.4
+%global pkg_release 1
+%global pkg_source https://github.com/qzed/linux-surface-control
 
-License:        MIT
-URL:            https://github.com/qzed/linux-surface-control
-Source0:        https://github.com/qzed/linux-surface-control/archive/v%{version}.tar.gz
+Name:		linux-surface-control
+Summary:	Control various aspects of Microsoft Surface devices from the shell
+License:	MIT
+BuildArch:	x86_64
+Requires:	dbus libgcc
+BuildRequires:	rust cargo
 
-Requires:       dbus libgcc
-BuildRequires:  rust cargo
+Version:	%{pkg_version}
+Release:	%{pkg_release}%{?dist}
+URL:		%{pkg_source}
+Source0:	%{pkg_source}/archive/v%{pkg_version}.zip
 
 %global debug_package %{nil}
 
 %description
-Linux User-Space Detachment System (DTX) Daemon for the Surface ACPI Driver (and Surface Books).
-Currently only the Surface Book 2 is supported, due to lack of driver-support on the Surface Book 1. 
-This may change in the future.
+Control various aspects of Microsoft Surface devices on Linux from the shell.
+Aims to provide a unified front-end to the various sysfs-attributes and special
+devices.
 
 %prep
-%autosetup -n linux-surface-control-%{version}
+%autosetup -n %{name}-%{pkg_version}
 
 %build
 env CARGO_TARGET_DIR="$PWD/target" CARGO_INCREMENTAL=0 cargo build --release --locked
 strip --strip-all "target/release/surface"
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-install -D -m755 "target/release/surface" "$RPM_BUILD_ROOT/usr/bin/surface"
-
-# completion files
-install -D -m644 "target/surface.bash" "$RPM_BUILD_ROOT/usr/share/bash-completion/completions/surface"
-install -D -m644 "target/_surface" "$RPM_BUILD_ROOT/usr/share/zsh/site-functions/_surface"
-install -D -m644 "target/surface.fish" "$RPM_BUILD_ROOT/usr/share/fish/completions/surface.fish"
-
-# license
-install -Dm644 "LICENSE" "$RPM_BUILD_ROOT/usr/share/licenses/surface-control/LICENSE"
+rm -rf %{buildroot}
+install -D -m755 "target/release/surface" "%{buildroot}/usr/bin/surface"
+install -D -m644 "target/surface.bash" "%{buildroot}/usr/share/bash-completion/completions/surface"
+install -D -m644 "target/_surface" "%{buildroot}/usr/share/zsh/site-functions/_surface"
+install -D -m644 "target/surface.fish" "%{buildroot}/usr/share/fish/completions/surface.fish"
+install -D -m644 "LICENSE" "%{buildroot}/usr/share/licenses/surface-control/LICENSE"
 
 %files
 %license LICENSE
@@ -46,6 +45,9 @@ install -Dm644 "LICENSE" "$RPM_BUILD_ROOT/usr/share/licenses/surface-control/LIC
 /usr/share/licenses/surface-control/LICENSE
 
 %changelog
+* Fri Sep 27 2019 Dorian Stoll <dorian.stoll@tmsp.io>
+- Update packaging
+
 * Sat Sep 14 2019 Dorian Stoll <dorian.stoll@tmsp.io>
 - Update to 0.2.4
 

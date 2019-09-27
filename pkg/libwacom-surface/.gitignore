@@ -1,0 +1,4 @@
+*
+!.gitignore
+!libwacom-surface.spec
+!0001-update-meson.patch
