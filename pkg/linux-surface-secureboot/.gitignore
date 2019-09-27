@@ -1,4 +1,4 @@
 *
 !.gitignore
 !linux-surface-secureboot.spec
-!StollD.der
+!StollD.cer
