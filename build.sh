@@ -71,13 +71,13 @@ do
 done
 
 # Apply our own patches
-for i in $DIR/patches/$PATCHSET/*.patch
+for i in $DIR/patches/*.patch
 do
 	patch -p1 < $i
 done
 
 # Apply the surface config
-scripts/kconfig/merge_config.sh -m 				\
+scripts/kconfig/merge_config.sh 				\
 	fedora/configs/kernel-$KERNELVERSION-x86_64.config	\
 	$DIR/config.surface
 
@@ -87,15 +87,11 @@ KVER="-$KERNELBUILD.surface.fc$FEDORAVER.x86_64"
 # Update version
 echo $(($KERNELBUILD - 1)) > .version
 
+# Copy over files
+cp -r $DIR/files/* .
+
 # Compile the kernel
 make -j$THREADS all LOCALVERSION=$KVER
-
-# Sign the compiled vmlinuz image
-if [ -f $DIR/keys/MOK.priv ]; then
-	IMAGE=$(make -s image_name)
-	sbsign --key $DIR/keys/MOK.priv --cert $DIR/keys/MOK.pem	\
-		--output $IMAGE $IMAGE
-fi
 
 # Package the kernel as .rpm
 make -j$THREADS binrpm-pkg LOCALVERSION=$KVER

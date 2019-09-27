@@ -1,0 +1,201 @@
+#!/bin/sh
+#
+#	Output a simple RPM spec file.
+#	This version assumes a minimum of RPM 4.0.3.
+#
+#	The only gothic bit here is redefining install_post to avoid
+#	stripping the symbols from files in the kernel which we want
+#
+#	Patched for non-x86 by Opencon (L) 2002 <opencon@rio.skydome.net>
+#
+
+# how we were called determines which rpms we build and how we build them
+if [ "$1" = prebuilt ]; then
+	MAKE="$MAKE -f $srctree/Makefile"
+fi
+
+KERNELVERSION=$(echo $KERNELRELEASE | cut -d'-' -f1)
+KERNELNAME=$(echo $KERNELRELEASE | sed "s|$KERNELVERSION-||g" | sed 's|.x86_64||g')
+
+# We can label the here-doc lines for conditional output to the spec file
+#
+# Labels:
+#  $S: this line is enabled only when building source package
+#  $M: this line is enabled only when CONFIG_MODULES is enabled
+sed -e 's/^\t*//'  <<EOF
+	Name: kernel-surface
+	Summary: The Linux Kernel with jakedays patches for Microsoft Surface
+	Version: $KERNELVERSION
+	Release: $KERNELNAME
+	License: GPL
+	Group: System Environment/Kernel
+	Vendor: The Linux Community
+	URL: http://www.kernel.org
+	%define __spec_install_post /usr/lib/rpm/brp-compress || :
+	%define debug_package %{nil}
+
+	%description
+	The Linux Kernel, the operating system core itself, with support for Microsoft Surface by jakeday.
+
+	%package devel
+	Summary: Development package for building kernel modules to match kernel-surface
+	Group: System Environment/Kernel
+	AutoReqProv: no
+	%description -n kernel-surface-devel
+	This package provides kernel headers and makefiles sufficient to build modules
+	against the kernel-surface package.
+
+	%prep
+
+	%install
+	mkdir -p %{buildroot}/boot
+	# Override \$(mod-fw) because we don't want it to install any firmware
+	# we'll get it from the linux-firmware package and we don't want conflicts
+	$MAKE %{?_smp_mflags} INSTALL_MOD_PATH=%{buildroot} modules_install KERNELRELEASE=$KERNELRELEASE mod-fw=
+	install -m 755 \$($MAKE image_name) %{buildroot}/boot/vmlinuz-$KERNELRELEASE
+	install -m 755 \$($MAKE image_name) %{buildroot}/lib/modules/$KERNELRELEASE/vmlinuz
+	install -m 644 System.map %{buildroot}/lib/modules/$KERNELRELEASE/System.map
+	install -m 644 .config %{buildroot}/lib/modules/$KERNELRELEASE/config
+	install -m 644 System.map %{buildroot}/boot/System.map-$KERNELRELEASE
+	install -m 644 .config %{buildroot}/boot/config-$KERNELRELEASE
+
+	# hmac sign the kernel for FIPS
+	sha512hmac %{buildroot}/boot/vmlinuz-$KERNELRELEASE | sed -e "s,%{buildroot},," > %{buildroot}/boot/.vmlinuz-$KERNELRELEASE.hmac
+	cp %{buildroot}/boot/.vmlinuz-$KERNELRELEASE.hmac %{buildroot}/lib/modules/$KERNELRELEASE/.vmlinuz.hmac
+
+	rm -f %{buildroot}/lib/modules/$KERNELRELEASE/build
+	rm -f %{buildroot}/lib/modules/$KERNELRELEASE/source
+	mkdir -p %{buildroot}/lib/modules/$KERNELRELEASE/build
+	(cd %{buildroot}/lib/modules/$KERNELRELEASE ; ln -s build source)
+
+	# first copy everything
+	cp --parents \$(find  -type f -name "Makefile*" -o -name "Kconfig*") %{buildroot}/lib/modules/$KERNELRELEASE/build
+	cp Module.symvers %{buildroot}/lib/modules/$KERNELRELEASE/build
+	cp System.map %{buildroot}/lib/modules/$KERNELRELEASE/build
+	if [ -s Module.markers ]; then
+		cp Module.markers %{buildroot}/lib/modules/$KERNELRELEASE/build
+	fi
+
+	# then drop all but the needed Makefiles/Kconfig files
+	rm -rf %{buildroot}/lib/modules/$KERNELRELEASE/build/Documentation
+	rm -rf %{buildroot}/lib/modules/$KERNELRELEASE/build/scripts
+	rm -rf %{buildroot}/lib/modules/$KERNELRELEASE/build/include
+	cp .config %{buildroot}/lib/modules/$KERNELRELEASE/build
+	cp -a scripts %{buildroot}/lib/modules/$KERNELRELEASE/build
+
+	if [ -f tools/objtool/objtool ]; then
+		cp -a tools/objtool/objtool %{buildroot}/lib/modules/$KERNELRELEASE/build/tools/objtool/ || :
+
+		# these are a few files associated with objtool
+		cp -a --parents tools/build/Build.include %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/build/Build %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/build/fixdep.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/scripts/utilities.mak %{buildroot}/lib/modules/$KERNELRELEASE/build/
+
+		# also more than necessary but it's not that many more files
+		cp -a --parents tools/objtool/* %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/lib/str_error_r.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/lib/string.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+		cp -a --parents tools/lib/subcmd/* %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	fi
+
+	if [ -d arch/x86/scripts ]; then
+		cp -a arch/x86/scripts %{buildroot}/lib/modules/$KERNELRELEASE/build/arch/%{_arch} || :
+	fi
+
+	if [ -f arch/x86/*lds ]; then
+		cp -a arch/x86/*lds %{buildroot}/lib/modules/$KERNELRELEASE/build/arch/%{_arch}/ || :
+	fi
+
+	if [ -f arch/%{asmarch}/kernel/module.lds ]; then
+		cp -a --parents arch/%{asmarch}/kernel/module.lds %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	fi
+
+	rm -f %{buildroot}/lib/modules/$KERNELRELEASE/build/scripts/*.o
+	rm -f %{buildroot}/lib/modules/$KERNELRELEASE/build/scripts/*/*.o
+
+	if [ -d arch/x86/include ]; then
+		cp -a --parents arch/x86/include %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	fi
+
+	cp -a include %{buildroot}/lib/modules/$KERNELRELEASE/build/include
+
+	# files for 'make prepare' to succeed with kernel-devel
+	cp -a --parents arch/x86/entry/syscalls/syscall_32.tbl %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/entry/syscalls/syscalltbl.sh %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/entry/syscalls/syscallhdr.sh %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/entry/syscalls/syscall_64.tbl %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/tools/relocs_32.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/tools/relocs_64.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/tools/relocs.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/tools/relocs_common.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/tools/relocs.h %{buildroot}/lib/modules/$KERNELRELEASE/build/
+
+	# Yes this is more includes than we probably need. Feel free to sort out
+	# dependencies if you so choose.
+	cp -a --parents tools/include/* %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/purgatory/purgatory.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/purgatory/stack.S %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/purgatory/setup-x86_64.S %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/purgatory/entry64.S %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/boot/string.h %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/boot/string.c %{buildroot}/lib/modules/$KERNELRELEASE/build/
+	cp -a --parents arch/x86/boot/ctype.h %{buildroot}/lib/modules/$KERNELRELEASE/build/
+
+	# Make sure the Makefile and version.h have a matching timestamp so that
+	# external modules can be built
+	touch -r %{buildroot}/lib/modules/$KERNELRELEASE/build/Makefile %{buildroot}/lib/modules/$KERNELRELEASE/build/include/generated/uapi/linux/version.h
+
+	# Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
+	cp %{buildroot}/lib/modules/$KERNELRELEASE/build/.config %{buildroot}/lib/modules/$KERNELRELEASE/build/include/config/auto.conf
+
+	mkdir -p %{buildroot}/usr/src/kernels
+	mv %{buildroot}/lib/modules/$KERNELRELEASE/build %{buildroot}/usr/src/kernels/$KERNELRELEASE
+
+	# This is going to create a broken link during the build, but we don't use
+	# it after this point.  We need the link to actually point to something
+	# when kernel-devel is installed, and a relative link doesn't work across
+	# the F17 UsrMove feature.
+	ln -sf /usr/src/kernels/$KERNELRELEASE %{buildroot}/lib/modules/$KERNELRELEASE/build
+
+	# prune junk from kernel-devel
+	find %{buildroot}/usr/src/kernels -name ".*.cmd" -delete
+
+	# remove files that will be auto generated by depmod at rpm -i time
+	pushd %{buildroot}/lib/modules/$KERNELRELEASE
+		rm -f modules.{alias*,builtin.bin,dep*,*map,symbols*,devname,softdep}
+	popd
+
+	# build a BLS config for this kernel
+	cat >%{buildroot}/lib/modules/$KERNELRELEASE/bls.conf <<EOC
+	title \$(. /etc/os-release && echo \$NAME) \$(. /etc/os-release && echo \$VERSION_ID) ($KERNELRELEASE)
+	version $KERNELRELEASE
+	linux /vmlinuz-$KERNELRELEASE
+	initrd /initramfs-$KERNELRELEASE.img
+	options \\\$kernelopts
+	grub_users \\\$grub_users
+	grub_arg --unrestricted
+	grub_class kernel
+	EOC
+
+	%clean
+	rm -rf %{buildroot}
+
+	%post
+	/bin/kernel-install add $KERNELRELEASE /lib/modules/$KERNELRELEASE/vmlinuz || exit $?
+
+	%preun
+	/bin/kernel-install remove $KERNELRELEASE /lib/modules/$KERNELRELEASE/vmlinuz || exit $?
+
+	%files
+	%defattr (-, root, root)
+	/lib/modules/$KERNELRELEASE
+	%ghost /boot/vmlinuz-$KERNELRELEASE
+	%ghost /boot/config-$KERNELRELEASE
+	%ghost /boot/System.map-$KERNELRELEASE
+	%ghost /boot/.vmlinuz-$KERNELRELEASE.hmac
+
+	%files devel
+	%defattr (-, root, root)
+	/usr/src/kernels/$KERNELRELEASE
+EOF

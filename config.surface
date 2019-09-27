@@ -3,10 +3,9 @@
 ## Compress kernel modules and forcefully remove debug symbols
 ##
 CONFIG_MODULE_COMPRESS=y
-# CONFIG_MODULE_COMPRESS_GZIP is not set
 CONFIG_MODULE_COMPRESS_XZ=y
+# CONFIG_MODULE_COMPRESS_GZIP is not set
 # CONFIG_DEBUG_INFO is not set
-# CONFIG_KALLSYMS is not set
 
 ##
 ## Surface related kernel configs.
@@ -18,12 +17,11 @@ CONFIG_SURFACE_3_POWER_OPREGION=m
 CONFIG_SURFACE_ACPI=m
 CONFIG_SURFACE_ACPI_SAN=y
 CONFIG_SURFACE_ACPI_SSH=y
-# CONFIG_SURFACE_ACPI_SSH_DEBUG_DEVICE is not set
+CONFIG_SURFACE_ACPI_SSH_DEBUG_DEVICE=y
 CONFIG_SURFACE_ACPI_VHF=y
 CONFIG_SURFACE_ACPI_DTX=y
 CONFIG_SURFACE_ACPI_SID=y
 CONFIG_SURFACE_BOOK2_DGPU_HPS=m
-# CONFIG_MWLWIFI is not set
 
 # Enable support for the image processing unit.
 # Note that this is useless without drivers for the camera sensors
