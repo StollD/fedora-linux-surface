@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# Default to using the first specfile in the current directory
+SPEC="*.spec"
+OPTS="-ba"
+
+usage() {
+	echo "Usage: $0 [OPTION]..."
+	echo "Wrapper for rpmbuild that is easier to use."
+	echo
+	echo "Options:"
+	echo "	-h	This help message"
+	echo "	-s	The specfile to build"
+	exit
+}
+
+while getopts ":h:s:" args; do
+	case "$args" in
+	s)
+		SPEC=$OPTARG
+		;;
+	h|*)
+		usage
+		;;
+	esac
+done
+shift $((OPTIND-1))
+
+if [ ! "$@" = "" ]; then
+	OPTS="$@"
+fi
+
+# Check if the specfile exists
+if [ "$(ls -f $SPEC | wc -l)" = "0" ]; then
+	echo "ERROR: No specfile found. Specify it with the -s option."
+	exit -2
+fi
+
+# Check if there are too many specfiles
+if [ ! "$(ls -f $SPEC | wc -l)" = "1" ]; then
+	echo "ERROR: Ambiguous matches for specfile. Please specify a single" 	\
+		"file through the -s option."
+	exit -7
+fi
+
+# Get the directory of the specfile
+SPEC=$(ls -f $SPEC)
+DIR=$(readlink -f $(dirname $SPEC))
+
+spectool				\
+	--define "_sourcedir $DIR"	\
+	--define "_specdir $DIR"	\
+	--define "_builddir $DIR"	\
+	--define "_srcrpmdir $DIR"	\
+	--define "_rpmdir $DIR"		\
+	--get-files --all 		\
+	--directory $DIR $SPEC
+
+echo
+
+rpmbuild				\
+	--define "_sourcedir $DIR"	\
+	--define "_specdir $DIR"	\
+	--define "_builddir $DIR"	\
+	--define "_srcrpmdir $DIR"	\
+	--define "_rpmdir $DIR"	\
+	$OPTS $SPEC
