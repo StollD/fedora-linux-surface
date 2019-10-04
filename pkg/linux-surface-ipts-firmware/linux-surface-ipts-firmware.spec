@@ -1,7 +1,7 @@
-%global pkg_version 20191002
+%global pkg_version 20191004
 %global pkg_release 1
 %global pkg_source https://github.com/qzed/linux-surface
-%global pkg_commit f12bf966702b9217d219cf84b6c657079f842d17
+%global pkg_commit a6c6b97da238af28dfb5fea4cd71c69f61d8d24e
 
 Name:		linux-surface-ipts-firmware
 Summary:	Touchscreen firmware for Microsoft Surface
@@ -28,6 +28,9 @@ cp -r firmware %{buildroot}/usr/lib
 /usr/lib/firmware/intel/ipts
 
 %changelog
+* Wed Oct 02 2019 Dorian Stoll <dorian.stoll@tmsp.io>
+- Actually fix the HID descriptor on Surface Laptop instead of replacing it
+
 * Wed Oct 02 2019 Dorian Stoll <dorian.stoll@tmsp.io>
 - Update firmware to fix touch input for Surface Laptop
 
