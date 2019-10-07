@@ -15,7 +15,7 @@ if [ "$1" = prebuilt ]; then
 fi
 
 KERNELVERSION=$(echo $KERNELRELEASE | cut -d'-' -f1)
-KERNELNAME=$(echo $KERNELRELEASE | sed "s|$KERNELVERSION-||g" | sed 's|.x86_64||g')
+KERNELNAME=$(echo $KERNELRELEASE | sed "s|$KERNELVERSION-||g" | sed 's|.x86_64||g' | sed 's|-|.|g')
 
 # We can label the here-doc lines for conditional output to the spec file
 #
