@@ -1,4 +1,4 @@
-%global pkg_version 0.2.4
+%global pkg_version 0.2.5
 %global pkg_release 1
 %global pkg_source https://github.com/qzed/linux-surface-control
 
@@ -45,6 +45,9 @@ install -D -m644 "LICENSE" "%{buildroot}/usr/share/licenses/surface-control/LICE
 /usr/share/licenses/surface-control/LICENSE
 
 %changelog
+* Sun Dec 01 2019 Dorian Stoll <dorian.stoll@tmsp.io>
+- Update to version 0.2.5
+
 * Fri Sep 27 2019 Dorian Stoll <dorian.stoll@tmsp.io>
 - Update packaging
 
