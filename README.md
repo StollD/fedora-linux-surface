@@ -52,7 +52,7 @@ $ sudo systemctl enable surfacebook2-button-autoremap.service
 Then, reboot the device to boot into the new kernel. At the UEFI screen, you
 will be greeted with a big blue screen, that says `MOK Management`. Confirm
 that you want to enroll my secureboot certificate. When it asks for a password
-enter `000`, then reboot. You should be able to start the surface kernel just
+enter `surface`, then reboot. You should be able to start the surface kernel just
 fine now.
 
 ## Surface wakes up from hibernation immideately
