@@ -1,5 +1,7 @@
+%global surface_source https://raw.githubusercontent.com/linux-surface/libwacom-surface-patches
+
 Name:           libwacom-surface
-Version:        1.1
+Version:        1.2
 Release:        1%{?dist}
 Summary:        Tablet Information Client Library
 Requires:       %{name}-data
@@ -10,15 +12,14 @@ License:        MIT
 URL:            https://github.com/linuxwacom/libwacom
 
 Source0:        https://github.com/linuxwacom/libwacom/releases/download/libwacom-%{version}/libwacom-%{version}.tar.bz2
-Patch0:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0001-Add-support-for-Intel-Management-Engine-bus.patch
-Patch1:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0002-data-Add-Microsoft-Surface-Book-2-13.5.patch
-Patch2:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0003-data-Add-Microsoft-Surface-Pro-5.patch
-Patch3:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0004-data-Add-Microsoft-Surface-Book-2-15.patch
-Patch4:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0005-data-Add-Microsoft-Surface-Pro-6.patch
-Patch5:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0006-data-Add-Microsoft-Surface-Pro-4.patch
-Patch6:         https://raw.githubusercontent.com/qzed/libwacom-surface/master/0007-data-Add-Microsoft-Surface-Book.patch
+Patch0:         %{surface_source}/v%{version}/0001-Add-support-for-Intel-Management-Engine-bus.patch
+Patch1:         %{surface_source}/v%{version}/0002-data-Add-Microsoft-Surface-Book-2-13.5.patch
+Patch2:         %{surface_source}/v%{version}/0003-data-Add-Microsoft-Surface-Pro-5.patch
+Patch3:         %{surface_source}/v%{version}/0004-data-Add-Microsoft-Surface-Book-2-15.patch
+Patch4:         %{surface_source}/v%{version}/0005-data-Add-Microsoft-Surface-Pro-6.patch
+Patch5:         %{surface_source}/v%{version}/0006-data-Add-Microsoft-Surface-Pro-4.patch
+Patch6:         %{surface_source}/v%{version}/0007-data-Add-Microsoft-Surface-Book.patch
 Patch7:         0001-update-meson.patch
-
 
 BuildRequires:  meson gcc
 BuildRequires:  glib2-devel libgudev1-devel
@@ -26,35 +27,37 @@ BuildRequires:  systemd systemd-devel
 BuildRequires:  git
 BuildRequires:  libxml2-devel
 
+Requires: %{name}-data = %{version}-%{release}
+
 %description
 %{name} is a library that provides information about Wacom tablets and
 tools. This information can then be used by drivers or applications to tweak
 the UI or general settings to match the physical tablet.
 
 %package devel
-Summary:        Tablet Information Client Library Library Development Package
+Summary:        Tablet Information Client Library Development Package
 Requires:       %{name} = %{version}-%{release}
 Requires:       pkgconfig
 Provides:       libwacom-devel
 Conflicts:      libwacom-devel
 
 %description devel
-Tablet information client library library development package.
+Tablet information client library development package.
 
 %package data
-Summary:        Tablet Information Client Library Library Data Files
+Summary:        Tablet Information Client Library Data Files
 BuildArch:      noarch
 Provides:       libwacom-data
 Conflicts:      libwacom-data
 
 %description data
-Tablet information client library library data files.
+Tablet information client library data files.
 
 %prep
 %autosetup -S git -n libwacom-%{version}
 
 %build
-%meson -Dtests=true
+%meson -Dtests=true -Ddocumentation=disabled
 %meson_build
 
 %install
@@ -92,6 +95,16 @@ install -d ${RPM_BUILD_ROOT}/%{_udevrulesdir}
 %{_datadir}/libwacom/layouts/*.svg
 
 %changelog
+* Mon Dec 23 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.2-2
+- Disable documentation explicitly. Fedora uses --auto-features=enabled
+  during the build.
+
+* Mon Dec 23 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.2-1
+- libwacom 1.2
+
+* Thu Nov 07 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.1-2
+- Require a libwacom-data package of the same version
+
 * Mon Sep 16 2019 Peter Hutterer <peter.hutterer@redhat.com> 1.1-1
 - libwacom 1.1
 
